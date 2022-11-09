@@ -13,6 +13,8 @@ public class Hero : MonoBehaviour
 
     [Header("Dynamic")]
     public float shieldLevel = 1;
+    private GameObject lastTriggerGo = null;
+
     private void Awake()
     {
         if (S == null)
@@ -48,5 +50,23 @@ public class Hero : MonoBehaviour
 
 
 
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        Transform rootT = other.gameObject.transform.root;
+        GameObject go = rootT.gameObject;
+        //Debug.Log("Shield trigger hit by: " + go.gameObject.name);
+        if (go == lastTriggerGo) return;
+        lastTriggerGo = go;
+
+        Enemy enemy = go.GetComponent<Enemy>();
+        if (enemy != null)
+        {
+            shieldLevel--;
+            Destroy(go);
+        } else
+        {
+            Debug.LogWarning("Shield trigger hit by non-Enemy" + go.name);
+        }
     }
 }
